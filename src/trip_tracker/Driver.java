@@ -35,13 +35,15 @@ public class Driver {
 	}
 
 	public int getAverageSpeed() {
-		int averageSpeed = 0;
+		double totalTime = 0;
+		double totalMiles = 0;
 		for (Trip trip : trips) {
-			averageSpeed += (int) Math.round(trip.getSpeed());
+			totalTime += trip.getDuration();
+			totalMiles += trip.getDistance();
 		}
 		if (trips.size() != 0) {
-			averageSpeed = averageSpeed / trips.size();
-			return averageSpeed;			
+			int averageSpeed = (int) Math.round(totalMiles / (totalTime/60));
+			return averageSpeed;
 		}
 		return 0;
 	}
