@@ -21,12 +21,35 @@ public class Driver {
 	}
 
 	public void assignTrip(Trip trip) {
-		trips.add(trip);
+		if (trip.getSpeed() >= 5 && trip.getSpeed() <= 100) {
+			trips.add(trip);
+		}
 	}
 
-	public double getTotalDistance() {
-		
+	public int getTotalDistance() {
+		int totalDistance = 0;
+		for (Trip trip : trips) {
+			totalDistance += (int) Math.round(trip.getDistance());
+		}
+		return totalDistance;
+	}
+
+	public int getAverageSpeed() {
+		int averageSpeed = 0;
+		for (Trip trip : trips) {
+			averageSpeed += (int) Math.round(trip.getSpeed());
+		}
+		if (trips.size() != 0) {
+			averageSpeed = averageSpeed / trips.size();
+			return averageSpeed;			
+		}
 		return 0;
+	}
+
+	public String getReport() {
+		String report = "";
+		report = name + ": " + getTotalDistance() + " miles @ " + getAverageSpeed() + " mph";
+		return report;
 	}
 
 

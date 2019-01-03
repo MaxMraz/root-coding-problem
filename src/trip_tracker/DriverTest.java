@@ -1,7 +1,8 @@
 package trip_tracker;
 
 
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
@@ -25,24 +26,17 @@ public class DriverTest {
 	//Create A Trip
 	
 	@Test
-	public void shouldCreateTripWithStartTime() {
-		Trip trip1 = new Trip("foo 07:00 08:00 60");
-		LocalTime idealStartTime = LocalTime.parse("07:00");
-		Assert.assertEquals(trip1.getStartTime(), idealStartTime);
-	}
-	
-	@Test
-	public void shouldCreateTripWithEndTime() {
-		Trip trip1 = new Trip("foo 07:00 08:00 60");
-		LocalTime idealEndTime = LocalTime.parse("08:00");
-		Assert.assertEquals(trip1.getEndTime(), idealEndTime);
-	}
-	
-	@Test
 	public void shouldCreateTripWithDistance() {
 		Trip trip1 = new Trip("foo 07:00 08:00 60");
 		double idealDistance = 60.0;
 		Assert.assertEquals(trip1.getDistance(), idealDistance, 0.001);
+	}
+	
+	@Test
+	public void shoudCreateAnotherTripWithDistance() {
+		Trip trip1 = new Trip("foo 10:00 10:15 15");
+		double expectedDistance = 15.00;
+		Assert.assertEquals(trip1.getDistance(), expectedDistance, 0.001);
 	}
 	
 	//Trip logic
@@ -70,7 +64,7 @@ public class DriverTest {
 		Driver testDriver = new Driver("foo");
 		Trip testTrip = new Trip("foo 07:00 08:00 60");
 		testDriver.assignTrip(testTrip);
-		Assert.assertEquals(true, testDriver.getTrips().contains(testTrip));
+		Assert.assertTrue(testDriver.getTrips().contains(testTrip));
 	}
 	
 	@Test
@@ -80,8 +74,24 @@ public class DriverTest {
 		Trip testTrip2 = new Trip("foo 07:00 08:00 60");
 		testDriver.assignTrip(testTrip1);
 		testDriver.assignTrip(testTrip2);
-		Assert.assertEquals(true, testDriver.getTrips().contains(testTrip1));
-		Assert.assertEquals(true, testDriver.getTrips().contains(testTrip2));
+		Assert.assertTrue(testDriver.getTrips().contains(testTrip1));
+		Assert.assertTrue(testDriver.getTrips().contains(testTrip2));
+	}
+	
+	@Test
+	public void shouldIgnoreATripThatsTooSlow() {
+		Driver testDriver = new Driver("foo");
+		Trip testTrip1 = new Trip("foo 07:00 08:00 1");
+		testDriver.assignTrip(testTrip1);
+		Assert.assertFalse(testDriver.getTrips().contains(testTrip1));
+	}
+
+	@Test
+	public void shouldIgnoreATripThatsTooFast() {
+		Driver testDriver = new Driver("foo");
+		Trip testTrip1 = new Trip("foo 07:00 08:00 3000");
+		testDriver.assignTrip(testTrip1);
+		Assert.assertFalse(testDriver.getTrips().contains(testTrip1));
 	}
 	
 	
@@ -96,6 +106,71 @@ public class DriverTest {
 		testDriver.assignTrip(testTrip2);
 		
 		Assert.assertEquals(120.0, testDriver.getTotalDistance(), 0.001);
+	}
+	
+	@Test
+	public void shouldGetAverageSpeed() {
+		Driver testDriver = new Driver("foo");
+		Trip testTrip1 = new Trip("foo 07:00 08:00 40");
+		Trip testTrip2 = new Trip("foo 07:00 08:00 20");
+		testDriver.assignTrip(testTrip1);
+		testDriver.assignTrip(testTrip2);
+		
+		Assert.assertEquals(30, testDriver.getAverageSpeed());
+	}
+	
+	@Test
+	public void shouldReturnDriverReport() {
+		Driver testDriver = new Driver("foo");
+		Trip testTrip1 = new Trip("foo 07:00 08:00 40");
+		Trip testTrip2 = new Trip("foo 07:00 08:00 20");
+		testDriver.assignTrip(testTrip1);
+		testDriver.assignTrip(testTrip2);
+		
+		Assert.assertEquals("foo: 60 miles @ 30 mph", testDriver.getReport());
+	}
+	
+	@Test
+	public void shouldReturnDriverReportForLessThanAnHour() {
+		Driver testDriver = new Driver("foo");
+		Trip testTrip1 = new Trip("foo 07:00 07:15 15");
+		testDriver.assignTrip(testTrip1);
+		
+		System.out.println("dist: " + testTrip1.getDistance());
+		System.out.println("speed: " + testTrip1.getSpeed());
+		System.out.println("duration" + testTrip1.getDuration());
+		Assert.assertEquals("foo: 15 miles @ 60 mph", testDriver.getReport());
+	}
+	
+	
+	// Input Processing
+	
+	@Test
+	public void shouldCreateANewDriverFromInput() {
+		InputProcessor iP = new InputProcessor();
+		iP.processInput("Driver foo");
+		
+		Collection<String> driverNames = new ArrayList<String>();
+		for (Driver driver : iP.getDrivers()) { driverNames.add(driver.getName());}
+		
+		Assert.assertTrue(driverNames.contains("foo"));
+	}
+	
+	@Test
+	public void shouldCreateANewTripFromInput() {
+		InputProcessor iP = new InputProcessor();
+		iP.processInput("Driver David");
+		iP.processInput("Trip David 07:00 08:00 40");
+		iP.processInput("Trip David 01:00 02:00 80");
+
+		int totalDistance = 0;
+		for (Driver driver : iP.getDrivers()) {
+			if (driver.getName().equals("David")) {
+				for (Trip trip : driver.getTrips()) {totalDistance += trip.getDistance();}
+			}
+		}
+		
+		Assert.assertEquals(120, totalDistance);
 	}
 	
 }
