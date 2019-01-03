@@ -44,7 +44,7 @@ public class DriverTest {
 	@Test
 	public void shouldGetTripDuration() {
 		Trip testTrip = new Trip("foo 07:00 09:00 60");
-		double duration = 2.0;
+		double duration = 120.0;
 		Assert.assertEquals(duration, testTrip.getDuration(), 0.01);
 	}
 	
