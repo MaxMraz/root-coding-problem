@@ -21,7 +21,7 @@ public class Driver {
 	public void assignTrip(Trip trip) {
 		if (trip.getSpeed() >= 5 && trip.getSpeed() <= 100) {
 			trips.add(trip);
-		}
+		} else { System.out.println("This trip falls outside a reasonable speed."); }
 	}
 
 	public int getTotalDistance() {

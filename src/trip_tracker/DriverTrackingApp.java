@@ -19,6 +19,7 @@ public class DriverTrackingApp {
 		while (!command.equalsIgnoreCase("quit")) {
 			inputProcessor.processInput(command);
 			inputProcessor.sortDriversByDistance();
+			System.out.println("\n Driver Stats:");
 			for(Driver driver : inputProcessor.getDrivers()) {
 				System.out.println(driver.getReport());
 			}
