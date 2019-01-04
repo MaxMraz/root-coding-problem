@@ -7,7 +7,7 @@ import java.util.Collection;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 
-public class DriverTest {
+public class Tests {
 	
 	@Test public void makeSureTestsAreWorking() {
 		Assert.assertEquals(1,  1);
@@ -171,6 +171,23 @@ public class DriverTest {
 		}
 		
 		Assert.assertEquals(120, totalDistance);
+	}
+	
+	@Test
+	public void shouldArrangeDriversByMiles() {
+		InputProcessor iP = new InputProcessor();
+		iP.processInput("Driver Max");
+		iP.processInput("Trip Max 07:00 08:00 40");
+		iP.processInput("Driver Riley");
+		iP.processInput("Trip Riley 07:00 08:00 50");
+		iP.processInput("Driver Spiderman");
+		iP.processInput("Trip Spiderman 07:00 08:00 45");
+		iP.sortDriversByDistance();
+		
+		Assert.assertEquals(iP.getDrivers().get(0).getName(), "Riley");
+		Assert.assertEquals(iP.getDrivers().get(1).getName(), "Spiderman");
+		Assert.assertEquals(iP.getDrivers().get(2).getName(), "Max");
+		
 	}
 	
 }

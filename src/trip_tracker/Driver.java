@@ -1,8 +1,6 @@
 package trip_tracker;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
 
 public class Driver {
 	private String name;
